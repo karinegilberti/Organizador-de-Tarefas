@@ -12,9 +12,12 @@ class Organizador:
         self.page.title = 'Organizador'
         self.task = ''
         self.view = 'all'
+        
+        # Cria a tabela no banco de dados
         self.db_execute("CREATE TABLE IF NOT EXISTS tasks(name, status)")
         self.results = self.db_execute('SELECT * FROM tasks')
-        self.main_page() # criar a página inicial]
+
+        self.main_page() # criar a página inicial
         
     def db_execute(self, query, params=[]):
         with sqlite3.connect('BancoDeDados.db') as con:
@@ -23,6 +26,7 @@ class Organizador:
             con.commit()
             return cur.fetchall()
         
+    # Atualiza o status da tarefa quando marcada ou desmarcada.
     def checked(self, e):
         is_checked = e.control.value
         label = e.control.label
@@ -47,6 +51,7 @@ class Organizador:
                     ft.Checkbox(label = res[0], on_change = self.checked, value = True if res[1] == 'Completo' else False)
                     for res in self.results if res
                 ],
+                # Habilita a rolagem para conferir ar tarefas
                  scroll=ft.ScrollMode.ALWAYS
             )
         )
